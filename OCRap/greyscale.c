@@ -115,27 +115,25 @@ void putpixel(SDL_Surface *surface, unsigned x, unsigned y, Uint32 pixel) {
 
 int main(int argc, char *argv[])
 {
-  SDL_Surface      *img;
-  unsigned    x;
-  unsigned    y;
+  SDL_Surface      *img = load_image(argv[1]);
+  int    x;
+  int    y;
   Uint8  avg;
   Uint8  r;
   Uint8  g;
   Uint8  b;
   Uint32 pixel;
-  img = load_image(argv[1]);
   avg = 0;
   pixel = 0;
-  for (x = 0; x < (unsigned)img->h; x++)
+  for (x = 0; x < img->w; x++)
     {
-      for (y = 0; y < (unsigned)img->w; y++)
+      for (y = 0; y < img->h; y++)
 	{
-	  pixel = getpixel(img, x, y);
+	  pixel = getpixel(img, (unsigned)x,(unsigned) y);
 	  SDL_GetRGB(pixel, img->format, &r, &g, &b);
-	  avg = ((0.3*r+ 0.59*g+ 0.11*b)/3);
+	  avg = ((0.3f * r+ 0.59f * g+ 0.11f * b)/3);
 	  pixel = SDL_MapRGB(img->format, avg, avg, avg);
-	  putpixel(img, x, y, pixel);
-	  printf(y);
+	  putpixel(img,(unsigned) x,(unsigned) y, pixel);
 	 }
     }
   display_image(img);
