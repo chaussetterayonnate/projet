@@ -8,7 +8,9 @@ typedef struct __attribute__((packed))
   int                 _output;
   int                 _hidden;
 
-  float                bias;
+  float                *bias_1a;
+  float                *bias_1b;
+  float                *bias_2;
 
   /*list of weights of synapses between
     input a and the hidden layer
