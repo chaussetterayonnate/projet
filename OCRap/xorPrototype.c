@@ -220,7 +220,7 @@ float *deriv_w2(NeuralNetworkInit *net, float *output)
   *(w2+3) = 0;
   for(size_t i  = 0; i<4; i++)
     {
-      *w2 += sigmoid(*(net->z1_00 +i)) * -(*output) * sigDer(*(net->z2));
+      *w2 += sigmoid(*(net->z1_00 +i)) * (*output) * sigDer(*(net->z2));
 
       *(w2+1) += sigmoid(*(net->z1_01 + i))
 	* (-(1 - *(output + 1)))
@@ -231,7 +231,7 @@ float *deriv_w2(NeuralNetworkInit *net, float *output)
 	* sigDer(*(net->z2+2));
 
       *(w2+3) += sigmoid(*(net->z1_11 + i))
-	* (-(*(output + 3)))
+	* ((*(output + 3)))
 	* sigDer(*(net->z2+3));
     }
   return w2;
@@ -244,10 +244,10 @@ float * deriv_b2(NeuralNetworkInit *net, float *output)
 
   b2 = malloc(4 * sizeof(float));
 
-  *b2= -(*output) * sigDer(*net->z2);
+  *b2= (*output) * sigDer(*net->z2);
   *(b2+1) = -(1 - *(output+1)) * sigDer(*(net->z2+1));
   *(b2+2) = -(1 - *(output+2)) * sigDer(*(net->z2+2));
-  *(b2+3) = -(*(output+3)) * sigDer(*(net->z2+3));
+  *(b2+3) = (*(output+3)) * sigDer(*(net->z2+3));
 
   return b2;
   free(b2);
@@ -283,14 +283,14 @@ float * deriv_b1(NeuralNetworkInit *net, float *output)
 
   for (size_t i = 0; i < 4; i++)
     {
-      *b1 += -(*(output)) * (*(net->weight_2 + i)) * sigDer(*(net->z1_00 + i));
+      *b1 += (*(output)) * (*(net->weight_2 + i)) * sigDer(*(net->z1_00 + i));
       *(b1+1) += -(1 - (*(output+1)))
 	* (*(net->weight_2 + i))
 	* sigDer(*(net->z1_01 +i));
       *(b1+2) += -(1 - (*(output+2)))
 	* (*(net->weight_2 + i))
 	* sigDer(*(net->z1_10 +i));
-      *(b1+3) += -(*(output+3))
+      *(b1+3) += (*(output+3))
 	* (*(net->weight_2 + i))
 	* sigDer(*(net->z1_11 +i));
     }
@@ -298,7 +298,19 @@ float * deriv_b1(NeuralNetworkInit *net, float *output)
   free(b1);
 }
 
-
+void gradient_descent(NeuralNetworkInit *net, float *w2, float *b2, float *w1, float *b1)
+{
+  int scalar = 1;
+  for(size_t i = 0; i < 4; i++)
+    {
+      *(net->weight_2 + i) = *(net->weight_2 + i) - scalar * (*(w2 +i));
+      *(net->bias_2 + i) = *(net->bias_2 + i) + scalar * (*(b2 +i));
+      *(net->weight_1a + i) = *(net->weight_1a + i) - scalar * (*(w1 + i));
+      *(net->weight_1b + i) = *(net->weight_1b + i) - scalar * (*(w1 + i));
+      *(net->bias_1a + i) = *(net->bias_1a +i) + scalar * (*(b1 + i));
+      *(net->bias_1b + i) = *(net->bias_1b +i) + scalar * (*(b1 +i));
+    }
+}
 
 int main(void)
 {
@@ -309,6 +321,37 @@ int main(void)
   float *output;
   output = malloc(4*sizeof(float));
 
+  output = forward(ne);
+  costFunction(output);
+  float *w2 = deriv_w2(ne, output);
+  float *b2 = deriv_b2(ne, output);
+  float *w1 = deriv_w1(ne, output);
+  float *b1 = deriv_b1(ne, output);
+  gradient_descent(ne,  w2, b2, w1, b1);
+  printf("\nbias_1a = ");
+  for(size_t j = 0; j < 4; j++)
+    printf("%.2f, ", *(ne->bias_1a + j));
+
+  printf("\nbias_1b = ");
+  for(size_t j = 0; j < 4; j++)
+    printf("%.2f, ", *(ne->bias_1b + j));
+
+  printf("\nbias_2 = ");
+  for(size_t j = 0; j < 4; j++)
+    printf("%.2f, ", *(ne->bias_2 + j));
+
+  printf("\nweight_1a = ");
+  for(size_t j = 0; j < 4; j++)
+    printf("%.2f, ", *(ne->weight_1a + j));
+
+  printf("\nweight_1b = ");
+  for(size_t j = 0; j <4; j++)
+    printf("%.2f, ", *(ne->weight_1b + j));
+
+  printf("\nweight_2 = ");
+  for(size_t j = 0; j <4; j++)
+    printf("%.2f, ", *(ne->weight_2 + j));
+  
   output = forward(ne);
   costFunction(output);
 
