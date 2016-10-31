@@ -9,8 +9,8 @@ typedef struct __attribute__((packed))
   int                 _hidden;
 
   float                bias;
-  
-  /*list of weights of synapses between 
+
+  /*list of weights of synapses between
     input a and the hidden layer
    */
   float               *weight_1a;
@@ -22,9 +22,11 @@ typedef struct __attribute__((packed))
   /*list of weights of synapses between
    the hidden layer and the output*/
   float               *weight_2;
-  
-}                     NeuralNertworkInit;
 
+}                     NeuralNetworkInit;
 
+//FUNCTIONS PROTOTYPES
+
+NeuralNetworkInit            *init_network(void);
 
 #endif /* !NEURONAL_NETWORK_H_ */

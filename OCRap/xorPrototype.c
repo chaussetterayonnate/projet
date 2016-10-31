@@ -1,10 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "NeuronalNetwork.h"
 
-#define random() (float)rand()/(RAND_MAX)
+#define random() (float)rand()/(float)(RAND_MAX)
 
+NeuralNetworkInit     *init_network(void)
+{
 NeuralNetworkInit *net;
+
+net = malloc(sizeof(NeuralNetworkInit));
+
+ if(net == NULL)
+   {
+     perror("init_network :");
+     return NULL;
+   }
 
 net->_input = 2;
 net->_output = 1;
@@ -23,10 +34,21 @@ for(size_t i = 0; i < 4; i++)
     *(net->weight_2 + i) = random();
   }
 
-printf("bias = %f.2\n", net->bias); 
+printf("bias = %.2f\n", net->bias);
 
-printf("weight_1a = =")
+ printf("weight_1a = =");
 for(size_t j = 0; j < 4; j++)
   {
-    printf("%f ", *(net->weight_1a + j));
+    printf("%.2f\n", *(net->weight_1a + j));
   }
+ return net;
+}
+
+int main(void)
+{
+  NeuralNetworkInit    *ne = init_network();
+  if (!ne)
+    return -1;
+  free(ne);
+  return EXIT_SUCCESS;
+}
