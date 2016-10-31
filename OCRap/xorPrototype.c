@@ -105,7 +105,7 @@ NeuralNetworkInit     *init_network(void)
 }
 
 //
-float* forward(NeuralNetworkInit *net)
+float *forward(NeuralNetworkInit *net)
 {
   /*list of hidden neurons for
    the test a = 0, b=0*/
@@ -191,7 +191,7 @@ float* forward(NeuralNetworkInit *net)
   free(output);
 }
 
-float * costFunction(float *output)
+float *costFunction(float *output)
 {
   float *cost;
   cost = malloc(4 * sizeof(float));
@@ -238,7 +238,7 @@ float *deriv_w2(NeuralNetworkInit *net, float *output)
   free(w2);
 }
 
-float * deriv_b2(NeuralNetworkInit *net, float *output)
+float *deriv_b2(NeuralNetworkInit *net, float *output)
 {
   float *b2;
 
@@ -253,7 +253,7 @@ float * deriv_b2(NeuralNetworkInit *net, float *output)
   free(b2);
 }
 
-float * deriv_w1(NeuralNetworkInit *net, float *output)
+float *deriv_w1(NeuralNetworkInit *net, float *output)
 {
   float *w1;
 
@@ -272,7 +272,7 @@ float * deriv_w1(NeuralNetworkInit *net, float *output)
   free(w1);
 }
 
-float * deriv_b1(NeuralNetworkInit *net, float *output)
+float *deriv_b1(NeuralNetworkInit *net, float *output)
 {
   float *b1;
   b1 = malloc(4 * sizeof(float));

@@ -60,40 +60,11 @@ SDL_Surface* display_image(SDL_Surface *img) {
   // return the screen for further uses
   return screen;
 }
-int Greyscale(SDL_Surface *image)
-{
-    char* pixels = NULL;
-    unsigned bytes = image->w * image->h * 4; 
-    if(! (pixels = (char*)malloc( bytes ))) return 1; 
- 
-    // copy image data to ram
-    char *p1 = pixels;
-    char *p2 = (char*)image->pixels;
-    for(unsigned i=0; i<bytes; i++, p1++, p2++) *p1 = *p2;
-    // convert to greyscale
-    p1 = pixels;
-    p2 = pixels;
-    unsigned col, a, b, size=bytes/4;
-    for(a = 0; a<size; a++)
-    {
-        col = 0;
-        for(b=0; b<3; b++, p1++) col = *p1; //read colours
-        p1++; //skip alpha byte
-        col /= 3;
-        for(b=0; b<3; b++, p2++) *p2 = col;  //write greyscale
-        p2++;
-    }
-    // copy greyscale to image
-    p1 = pixels;
-    p2 = (char*)image->pixels;
-    for(unsigned i=0; i<bytes; i++, p1++, p2++) *p2 = *p1;
-    free(pixels);
-    return 0;
-}
+
 int main(int argc, char *argv[])
 {
   SDL_Surface        *img = load_image(argv[1]);
-  Greyscale(img);
+  display_image(img);
   SDL_FreeSurface(img);
   return argc;
 }

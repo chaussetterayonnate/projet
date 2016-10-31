@@ -5,13 +5,13 @@ CC=gcc
 CPPFLAGS= `pkg-config --cflags sdl`
 CFLAGS= -Wall -Wextra -Werror -std=c99 -O3
 LDFLAGS=
-LDLIBS= -lm `pkg-config --libs sdl` -lSDL_image
+LDLIBS= `pkg-config --libs sdl` -lSDL_image -lm
 
-SRC= savingWheights.c xorPrototype.c, load.c ocr_decoupage.c greyscale.c
+SRC= load.c ocr_decoupage.c greyscale.c savingWheights.c xorPrototype.c 
 
 OBJ= ${SRC:.c=.o}
 
-all: savingWheights, load, ocr_decoupage, greyscale, xorPrototype
+all: load, ocr_decoupage, greyscale, savingWheights, xorPrototype
 
 main: ${OBJ}
 
