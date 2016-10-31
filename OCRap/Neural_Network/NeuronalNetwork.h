@@ -37,5 +37,11 @@ typedef struct __attribute__((packed))
 //FUNCTIONS PROTOTYPES
 
 NeuralNetworkInit            *init_network(void);
+float                        *forward(NeuralNetworkInit *net);
+float                        *costFunction(float *output);
+float                        *deriv_w2(NeuralNetworkInit *net, float *output);
+float                        *deriv_b2(NeuralNetworkInit *net, float *output);
+float                        *deriv_w1(NeuralNetworkInit *net, float *output);
+float                        *deriv_b1(NeuralNetworkInit *net, float *output);
 
 #endif /* !NEURONAL_NETWORK_H_ */

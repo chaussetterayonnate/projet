@@ -93,7 +93,8 @@ void definirPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
 
 {
      int nbOctetsParPixel = surface->format->BytesPerPixel;
-     Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * nbOctetsParPixel;
+     Uint8 *p = (Uint8 *)surface->pixels
+                + y * surface->pitch + x * nbOctetsParPixel;
     switch(nbOctetsParPixel)
     {
         case 1:
