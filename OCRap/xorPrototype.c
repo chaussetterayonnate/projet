@@ -1,12 +1,33 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <math.h>
+
 #include "NeuronalNetwork.h"
 
 #define random()         (float)rand()/(float)(RAND_MAX)
-#define expo(z)          exp(-(double)z)
-#define sigmoid(z)       (1. / (1. + expo(z))
-#define sigmoidDer(z)    ((float)(z)*(1.-z))
+//#define sigmoid(z)       (1. / (1. + expo(z))
+//#define sigmoidDer(z)    ((float)(z)*(1.-z))
+
+float expo (float z)
+{
+  double  x = (double)z;
+  return (float)exp(x);
+}
+
+float sigmoid (float z)
+{
+  double x = (double)z;
+  return (float) (1 / (1 + expo(x)));
+}
+
+float sigmoidDer ( float z)
+{
+  double x = (double) z;
+  return (float) (x * (1 - x));
+}
+
+//double exp
+
 
 NeuralNetworkInit     *init_network(void)
 {
@@ -62,17 +83,27 @@ void forward(NeuralNetworkInit *net, int *a, int *b)
   z1_10 = malloc(4*sizeof(float));
   z1_11 = malloc(4*sizeof(float));
 
-  
   for(size_t i = 0; i < 4; i++)
     {
-      *(z1_00 + i) = sigmoid(((*(a+i)) * (*(net->weight_1a + i)) + net->bias) +
-			     ((*(b+i)) * (*(net->weight_1b + i)) + net->bias)));
-      *(z1_01 + i) = sigmoid(((*(a+i)) * (*(net->weight_1a + i)) + net->bias) +
-			     ((*(b+i)) * (*(net->weight_1b + i)) + net->bias)));
-      *(z1_10 + i) = sigmoid(((*(a+i)) * (*(net->weight_1a + i)) + net->bias) +
-			     ((*(b+i)) * (*(net->weight_1b + i)) + net->bias)));
-      *(z1_11 + i) = sigmoid(((*(a+i)) * (*(net->weight_1a + i)) + net->bias) +
-			     ((*(b+i)) * (*(net->weight_1b + i)) + net->bias)));
+      *(z1_00 + i) = sigmoid(((*(a+i)) * (*(net->weight_1a + i))
+			      + net->bias)
+			      + ((*(b+i)) * (*(net->weight_1b + i))
+			      + net->bias));
+
+      *(z1_01 + i) = sigmoid(((*(a+i)) * (*(net->weight_1a + i))
+			      + net->bias)
+			      + ((*(b+i)) * (*(net->weight_1b + i))
+			      + net->bias));
+
+      *(z1_10 + i) = sigmoid(((*(a+i)) * (*(net->weight_1a + i))
+			      + net->bias)
+			      + ((*(b+i)) * (*(net->weight_1b + i))
+			      + net->bias));
+
+      *(z1_11 + i) = sigmoid(((*(a+i)) * (*(net->weight_1a + i))
+			      + net->bias)
+			      + ((*(b+i)) * (*(net->weight_1b + i))
+			      + net->bias));
     }
   printf("z1_00 = ");
   for(size_t j = 0; j < 4; j++)
@@ -86,7 +117,7 @@ int main(void)
   NeuralNetworkInit    *ne = init_network();
   if (!ne)
     return -1;
-  
+
   int *a;
   int *b;
   a = malloc(4*sizeof(int));
@@ -102,7 +133,7 @@ int main(void)
   *(b+3) = 1;
 
   forward(ne,a,b);
-  
+
   free(ne);
   free(a);
   free(b);
