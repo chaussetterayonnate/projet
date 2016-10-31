@@ -53,6 +53,13 @@ net->weight_1a  = malloc(4 * sizeof(float));
 net->weight_1b = malloc(4 * sizeof(float));
 net->weight_2 = malloc(4 * sizeof(float));
 
+ net->z1_00 = malloc(4 * sizeof(float));
+ net->z1_01 = malloc(4 * sizeof(float));
+ net->z1_10 = malloc(4 * sizeof(float));
+ net->z1_11 = malloc(4 * sizeof(float));
+
+ net->z2 = malloc(4 * sizeof(float));
+ 
 for(size_t i = 0; i < 4; i++)
   {
     *(net->weight_1a + i) = random();
@@ -62,7 +69,13 @@ for(size_t i = 0; i < 4; i++)
     *(net->bias_1a + i) = random()*2 - 1;
     *(net->bias_1b + i) = random()*2 - 1;
     *(net->bias_2 + i) = random()*2 - 1;
-    
+
+    *(net->z1_00 +i) = 0;
+    *(net->z1_01 +i) = 0;
+    *(net->z1_10 +i) = 0;
+    *(net->z1_11 +i) = 0;
+
+    *(net->z2 +i) = 0;
   }
 
 printf("\nbias_1a = ");
@@ -97,80 +110,82 @@ float* forward(NeuralNetworkInit *net)
 {
   /*list of hidden neurons for
    the test a = 0, b=0*/
-  float        *z1_00;
+  float        *a1_00;
   //same for different a & b
-  float        *z1_01;
-  float        *z1_10;
-  float        *z1_11;
-
-  float        output_00 = 0;
-  float        output_01 = 0;
-  float        output_10 = 0;
-  float        output_11 = 0;
+  float        *a1_01;
+  float        *a1_10;
+  float        *a1_11;
   
   float        *output;
 
-  z1_00 = malloc(4*sizeof(float));
-  z1_01 = malloc(4*sizeof(float));
-  z1_10 = malloc(4*sizeof(float));
-  z1_11 = malloc(4*sizeof(float));
+  a1_00 = malloc(4*sizeof(float));
+  a1_01 = malloc(4*sizeof(float));
+  a1_10 = malloc(4*sizeof(float));
+  a1_11 = malloc(4*sizeof(float));
 
   output = malloc(4*sizeof(float));
 
   for(size_t i = 0; i < 4; i++)
     {
       
-      *(z1_00 + i) = sigmoid(*(net->bias_1a +i) + *(net->bias_1b +i));
-
-      *(z1_01 + i) = sigmoid(*(net->bias_1a +i)
+      *(net->z1_00 + i) = (*(net->bias_1a +i) + *(net->bias_1b +i));
+      *(a1_00 +i) = sigmoid(*(net->z1_00 +i));
+	
+      *(net->z1_01 + i) = (*(net->bias_1a +i)
 			      + *(net->weight_1b + i)
 			     + *(net->bias_1b + i));
-      *(z1_10 + i) = sigmoid(*(net->weight_1a + i)
+      *(a1_01 +i) = sigmoid(*(net->z1_01 +i));
+			    
+      *(net->z1_10 + i) = (*(net->weight_1a + i)
 			     + *(net->bias_1a + i)
 			     + *(net->bias_1b + i));
-
-      *(z1_11 + i) = sigmoid(*(net->weight_1a + i)
+      *(a1_10 +i) = sigmoid(*(net->z1_10 +i));
+      
+      *(net->z1_11 + i) = (*(net->weight_1a + i)
 			     + *(net->bias_1a + i)
 			     + *(net->weight_1b + i)
 	                     + *(net->bias_1b + i));
+      *(a1_11 +i) = sigmoid(*(net->z1_11 +i));
+      
     }
-  printf("\nz1_00 = ");
+  
+  printf("\na1_00 = ");
   for(size_t j = 0; j < 4; j++)
-      printf("%.2f, ",*(z1_00+j));
+      printf("%.2f, ",*(a1_00+j));
 
-  printf("\nz1_01 = ");
+  printf("\na1_01 = ");
   for (size_t j = 0; j < 4; j++)
-    printf("%.2f, ",*(z1_01+j));
+    printf("%.2f, ",*(a1_01+j));
 
-  printf("\nz1_10 = ");
+  printf("\na1_10 = ");
   for (size_t j = 0; j < 4; j++)
-    printf("%.2f, ",*(z1_01+j));
+    printf("%.2f, ",*(a1_01+j));
 
-  printf("\nz1_11 = ");
+  printf("\na1_11 = ");
   for (size_t j = 0; j < 4; j++)
-    printf("%.2f, ",*(z1_11+j));
+    printf("%.2f, ",*(a1_11+j));
 
   for(size_t i = 0; i < 4; i++)
     {
-      output_00 += *(z1_00 +i)*(*(net->weight_2 +i))
+      *net->z2 += *(net->z1_00 +i)*(*(net->weight_2 +i))
+      +  *(net->bias_2 +i);
+      *(net->z2 + 1) += *(net->z1_01 +i)*(*(net->weight_2 +i))
 	+ *(net->bias_2 +i);
-      output_01 += *(z1_01 +i)*(*(net->weight_2 +i))
+      *(net->z2 + 2) += *(net->z1_10 +i)*(*(net->weight_2 +i))
 	+ *(net->bias_2 +i);
-      output_10 += *(z1_10 +i)*(*(net->weight_2 +i))
-	+ *(net->bias_2 +i);
-      output_11 += *(z1_11 +i)*(*(net->weight_2 +i))
+      *(net->z2 + 3) += *(net->z1_11 +i)*(*(net->weight_2 +i))
 	+ *(net->bias_2 +i);
     }
 
-  *output   = sigmoid(output_00);
-  *(output+1)= sigmoid(output_01);
-  *(output +2) = sigmoid(output_10);
-  *(output +3) = sigmoid(output_11);
+  *output   = sigmoid(*(net->z2));
+  *(output+1)= sigmoid(*(net->z2+1));
+  *(output +2) = sigmoid(*(net->z2+2));
+  *(output +3) = sigmoid(*(net->z2+3));
   
-  printf("\n00 : %.2f \n", output_00);
-  printf("01 : %.2f \n", output_01);
-  printf("10 : %.2f \n", output_10);
-  printf("11 : %.2f \n", output_11);
+  printf("\n00 : %.2f \n", *output);
+printf("01 : %.2f \n", *(output+1));
+printf("10 : %.2f \n", *(output+2));
+printf("11 : %.2f \n", *(output+3));
 
   return output;
 }
