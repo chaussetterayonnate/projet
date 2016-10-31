@@ -207,7 +207,7 @@ float * costFunction(float *output)
   return cost;
 }
 
-float *deriv_w2(NeuralNetworkInit net, float *output)
+float *deriv_w2(NeuralNetworkInit *net, float *output)
 {
   float *w2;
 
@@ -216,7 +216,7 @@ float *deriv_w2(NeuralNetworkInit net, float *output)
   *(w2+1) = 0;
   *(w2+2) = 0;
   *(w2+3) = 0;
-  for(size_t = 0; i<4; i++)
+  for(size_t i  = 0; i<4; i++)
     {
       *w2 += sigmoid(*(net->z1_00 +i)) * -(*output) * sigDer(*(net->z2));
 
@@ -235,7 +235,7 @@ float *deriv_w2(NeuralNetworkInit net, float *output)
 return w2;
 }
 
-float * deriv_b2(NeuralNetworkInit net, float *output)
+float * deriv_b2(NeuralNetworkInit *net, float *output)
 {
   float *b2;
 
@@ -248,7 +248,7 @@ float * deriv_b2(NeuralNetworkInit net, float *output)
   return b2;
 }
 
-float * deriv_w1(NeuralNetworkInit net, float *output)
+float * deriv_w1(NeuralNetworkInit *net, float *output)
 {
   float *w1;
 
@@ -266,7 +266,7 @@ float * deriv_w1(NeuralNetworkInit net, float *output)
 return w1;
 }
 
-float * deriv_b1(NeuralNetworkInit net, float *output)
+float * deriv_b1(NeuralNetworkInit *net, float *output)
 {
   float *b1;
   b1 = malloc(4 * sizeof(float));
@@ -288,6 +288,7 @@ float * deriv_b1(NeuralNetworkInit net, float *output)
 	* (*(net->weight_2 + i))
 	* sigDer(*(net->z1_11 +i));
     }
+  return b1;
 }
 
 
