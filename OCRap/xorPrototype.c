@@ -20,7 +20,7 @@ float sigmoid (float z)
   return (float) (1 / (1 + expo(x)));
 }
 
-float sigmoidDer ( float z)
+float sigDer ( float z)
 {
   double x = (double) z;
   return (float) (x * (1 - x));
@@ -207,19 +207,88 @@ float * costFunction(float *output)
   return cost;
 }
 
-/*float * deriv_w2(NeuralNetworkInit net, float *output)
+float *deriv_w2(NeuralNetworkInit net, float *output)
 {
-  
+  float *w2;
+
+  w2 = malloc(4 * sizeof(float));
+  *w2 = 0;
+  *(w2+1) = 0;
+  *(w2+2) = 0;
+  *(w2+3) = 0;
+  for(size_t = 0; i<4; i++)
+    {
+      *w2 += sigmoid(*(net->z1_00 +i)) * -(*output) * sigDer(*(net->z2));
+
+      *(w2+1) += sigmoid(*(net->z1_01 + i))
+	* (-(1 - *(output + 1)))
+	* sigDer(*(net->z2+1));
+
+      *(w2+2) += sigmoid(*(net->z1_10 + i))
+	* (-(1 - *(output + 2)))
+	* sigDer(*(net->z2+2));
+
+      *(w2+3) += sigmoid(*(net->z1_11 + i))
+	* (-(*(output + 3)))
+	* sigDer(*(net->z2+3));
+    }
+return w2;
 }
 
 float * deriv_b2(NeuralNetworkInit net, float *output)
-{}
+{
+  float *b2;
+
+  b2 = malloc(4 * sizeof(float));
+
+  *b2= -(*output) * sigDer(*net->z2);
+  *(b2+1) = -(1 - *(output+1)) * sigDer(*(net->z2+1));
+  *(b2+2) = -(1 - *(output+2)) * sigDer(*(net->z2+2));
+  *(b2+3) = -(*(output+3)) * sigDer(*(net->z2+3));
+  return b2;
+}
 
 float * deriv_w1(NeuralNetworkInit net, float *output)
-{}
+{
+  float *w1;
+
+  w1 = malloc(4 * sizeof(float));
+  *w1 = 0;
+  *(w1+1) = 0;
+  *(w1+2) = 0;
+  *(w1+3) = 0;
+
+  for(size_t i = 0; i <4; i++)
+    {
+      *(w1+1) += -(1-(*(output+1))) * sigDer(*(net->z1_01 + i));
+      *(w1+2) += -(1-(*(output+2))) * sigDer(*(net->z1_10 + i)); 
+    }
+return w1;
+}
 
 float * deriv_b1(NeuralNetworkInit net, float *output)
-{}*/
+{
+  float *b1;
+  b1 = malloc(4 * sizeof(float));
+  *b1 = 0;
+  *(b1+1) = 0;
+  *(b1+2) = 0;
+  *(b1+3) = 0;
+
+  for(size_t i = 0; i < 4; i++)
+    {
+      *b1 += -(*(output)) * (*(net->weight_2 + i)) * sigDer(*(net->z1_00 + i));
+      *(b1+1) += -(1 - (*(output+1)))
+	* (*(net->weight_2 + i))
+	* sigDer(*(net->z1_01 +i));
+      *(b1+2) += -(1 - (*(output+2)))
+	* (*(net->weight_2 + i))
+	* sigDer(*(net->z1_10 +i));
+      *(b1+3) += -(*(output+3))
+	* (*(net->weight_2 + i))
+	* sigDer(*(net->z1_11 +i));
+    }
+}
 
 
 
